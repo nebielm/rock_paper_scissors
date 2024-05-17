@@ -19,8 +19,12 @@ class Player:
         return 'rock'
 
     def learn(self, my_move, their_move):
-        self.my_move = my_move
-        self.their_move = their_move
+        pass
+
+
+class RockPlayer(Player):
+    def __init__(self):
+        super().__init__()
 
 
 class HumanPlayer(Player):
@@ -29,7 +33,7 @@ class HumanPlayer(Player):
 
     def move(self):
         while True:
-            answer = input("Choose between rock, scissors and paper: ")
+            answer = input("Choose between rock, paper and scissors: ")
             if answer.lower() in moves:
                 return answer
             print("Try again.")
@@ -51,6 +55,10 @@ class ReflectPlayer(Player):
         next_move = self.their_move
         return next_move
 
+    def learn(self, my_move, their_move):
+        self.my_move = my_move
+        self.their_move = their_move
+
 
 class CyclePlayer(Player):
     def __init__(self):
@@ -63,6 +71,10 @@ class CyclePlayer(Player):
             return moves[0]
         else:
             return moves[i+1]
+
+    def learn(self, my_move, their_move):
+        self.my_move = my_move
+        self.their_move = their_move
 
 
 def beats(one, two):
@@ -80,6 +92,7 @@ class Game:
         move1 = self.p1.move()
         move2 = self.p2.move()
         print(f"Player 1: {move1}  Player 2: {move2}")
+        print("---------->")
         if beats(move1, move2):
             print("Player 1 wins the round.")
             self.p1.score += 1
@@ -88,22 +101,29 @@ class Game:
             self.p2.score += 1
         else:
             print("This round is a draw.")
+        print(f"Score Player 1: {self.p1.score}")
+        print(f"Score Player 2: {self.p2.score}")
+        print("#=================#")
         self.p1.learn(move1, move2)
         self.p2.learn(move2, move1)
 
     def play_game(self):
-        print("Game start!")
+        print("Game start!\n#=================#")
         while True:
-            for round in range(1, 4):
-                print(f"Round {round}:")
+            for match in range(1, 4):
+                print(f"Round {match}")
                 self.play_round()
             if self.p1.score > self.p2.score:
-                return f"Player 1 wins with a final score of {self.p1.score} Points !!!"
+                return (f"Player 1 wins with a final "
+                        f"score of {self.p1.score} Points !!!\n"
+                        f"Player 2 scores {self.p2.score} Points.")
             elif self.p1.score < self.p2.score:
-                return f"Player 2 wins a final score of {self.p2.score} Points !!!"
+                return (f"Player 2 wins with a final "
+                        f"score of {self.p2.score} Points !!!\n"
+                        f"Player 1 scores {self.p1.score} Points.")
             print("It's a draw !! Game continues for another 3 rounds.")
 
 
 if __name__ == '__main__':
-    game = Game(HumanPlayer(), CyclePlayer())
+    game = Game(HumanPlayer(), RandomPlayer())
     print(game.play_game())
