@@ -109,7 +109,10 @@ class Game:
 
     def play_game(self):
         print("Game start!\n#=================#")
-        while True:
+        continuation_counter = 0
+        max_continuation = 3
+        while continuation_counter < max_continuation:
+            continuation_counter += 1
             for match in range(1, 4):
                 print(f"Round {match}")
                 self.play_round()
@@ -121,9 +124,13 @@ class Game:
                 return (f"Player 2 wins with a final "
                         f"score of {self.p2.score} Points !!!\n"
                         f"Player 1 scores {self.p1.score} Points.")
-            print("It's a draw !! Game continues for another 3 rounds.")
+            if max_continuation != continuation_counter:
+                print("It's a draw !! Game continues for another 3 rounds.")
+        return ("Game over with a draw.\n"
+                f"Player 1 scores {self.p1.score} Points.\n"
+                f"Player 2 scores {self.p2.score} Points")
 
 
 if __name__ == '__main__':
-    game = Game(HumanPlayer(), RandomPlayer())
+    game = Game(HumanPlayer(), RockPlayer())
     print(game.play_game())
